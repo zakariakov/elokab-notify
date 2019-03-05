@@ -4,7 +4,7 @@
 # then please put 'unknown'.
 #Maintainer: Abouzakaria <zkariakov@gmail.com>
 pkgname=elokab-notify
-pkgver=0.1
+pkgver=0.2
 pkgrel=1
 epoch=
 pkgdesc=""
@@ -23,7 +23,7 @@ backup=()
 options=()
 install=
 changelog=
-source=("https://github.com/zakariakov/elokab-notify/archive/0.1.tar.gz"  )
+source=("https://github.com/zakariakov/elokab-notify/archive/0.2.tar.gz"  )
 
 noextract=()
 md5sums=("SKIP")
