@@ -55,7 +55,7 @@ public:
     /**
      * @brief ElokabNotification تكوين الاشعارات
      */
-    ElokabNotification();
+    ElokabNotification(bool til_wm);
 
 public Q_SLOTS:
     /**

@@ -10,25 +10,25 @@
 #define TOP_RIGHT 1
 #define BOT_LEFT 2
 #define BOT_RIGHT 3
-
 #define TOP_CENTER 4
 #define LEFT_CENTER 5
 #define RIGHT_CENTER 6
 #define BOT_CENTER 7
 
 //____________________________________________________________________________________
-NotificationGui::NotificationGui(QWidget *parent) :
+NotificationGui::NotificationGui(bool til_wm, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::NotificationGui)
 {
+    m_til_wm=til_wm;
      ui->setupUi(this);
      ui->widgetNavig->setVisible(false);
-     setWindowFlags(  Qt::Dialog | Qt::WindowStaysOnTopHint | Qt::CustomizeWindowHint | Qt::X11BypassWindowManagerHint);
+     setWindowFlags(  /*Qt::WindowStaysOnTopHint | Qt::CustomizeWindowHint |*/ Qt::X11BypassWindowManagerHint);
      mTimer=new QTimer;
 
      m_fileWatcher=new QFileSystemWatcher;
-     setting=new QSettings("elokab","settings");
-     m_fileWatcher->addPath(setting->fileName());
+    QSettings setting;
+     m_fileWatcher->addPath(setting.fileName());
      connect(m_fileWatcher, SIGNAL(fileChanged(QString)), this, SLOT(loadSettings()));
 
      connect(ui->toolButtonClose,SIGNAL(clicked()),this,SLOT(hide()));
@@ -54,6 +54,11 @@ NotificationGui::NotificationGui(QWidget *parent) :
 
 }
 
+ void NotificationGui::mousePressEvent(QMouseEvent *event)
+ {
+     Q_UNUSED(event)
+     hide();
+ }
 //____________________________________________________________________________________
 NotificationGui::~NotificationGui()
 {
@@ -153,21 +158,21 @@ QColor listToColor(QList<QVariant>list)
 //____________________________________________________________________________________
 void  NotificationGui::loadSettings()
 {
- setting->sync();
-    setting->beginGroup("Panel-Style");
+    QSettings setting;
+    setting.beginGroup("Panel-Style");
 
-    QList<QVariant> mcolorGlobale=setting->value("colorGlobale",QList<QVariant>()<<56<<56<< 56<< 150).toList();
-    QList<QVariant> mcolorFont=setting->value("colorFont",QList<QVariant>()<<255<<255<<255<<150).toList();
+    QList<QVariant> mcolorGlobale=setting.value("colorGlobale",QList<QVariant>()<<56<<56<< 56<< 150).toList();
+    QList<QVariant> mcolorFont=setting.value("colorFont",QList<QVariant>()<<255<<255<<255<<150).toList();
 
     QColor colorGlobale=listToColor(mcolorGlobale);
     QColor colorFont=listToColor(mcolorFont);
 
-    bool m_styleDefault=setting->value("styleDefault",true).toBool();
-    setting->endGroup();
-    setting->beginGroup("Notification");
-    mPosition=setting->value("position",TOP_LEFT).toInt();
+    bool m_styleDefault=setting.value("styleDefault",true).toBool();
+    setting.endGroup();
+    setting.beginGroup("Notification");
+    mPosition=setting.value("position",TOP_LEFT).toInt();
 
-    setting->endGroup();
+    setting.endGroup();
 
     //------------------------------------
 
@@ -221,7 +226,13 @@ void NotificationGui::realign()
 loadSettings();
 adjustSize();
    this->resize(this->sizeHint().width(),this->sizeHint().height());
-   QRect screen = QApplication::desktop()->availableGeometry(-1);
+ QRect screen;
+ int pScr= QApplication::desktop()->primaryScreen();
+if(m_til_wm)
+    screen = QApplication::desktop()->screen(pScr)->geometry();
+else
+    screen = QApplication::desktop()->availableGeometry(0);
+
    QRect rect =this->rect();
    qDebug()<<"screen rect "<<screen;
  //------------------------------------

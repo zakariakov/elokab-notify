@@ -22,9 +22,10 @@ public:
      * @brief NotificationGui تكوين نافذة الاشعارات
      * @param parent
      */
-    explicit NotificationGui(QWidget *parent = 0);
+    explicit NotificationGui(bool til_wm,QWidget *parent = nullptr);
     ~NotificationGui();
 
+   void mousePressEvent(QMouseEvent *event);
 protected:
     /**
      * @brief hideEvent عند اخفاء النافذة
@@ -57,10 +58,7 @@ protected:
         realign();
     }
 
-    void mousePressEvent(QMouseEvent */*event*/)
-    {
-        this->hide();
-    }
+
 
 public slots:
     /**
@@ -111,9 +109,11 @@ private:
      */
     QFileSystemWatcher *m_fileWatcher;
 
-    QSettings  *setting;
+
 
     int mCurIndex;
+
+    bool m_til_wm=false;
 };
 
 #endif // NOTIFICATIONGUI_H

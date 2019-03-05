@@ -44,10 +44,10 @@
 
 
 
-ElokabNotification::ElokabNotification()
+ElokabNotification::ElokabNotification(bool til_wm)
 {
 
-    mGui=new NotificationGui;
+    mGui=new NotificationGui(til_wm);
 
 }
 

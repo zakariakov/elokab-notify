@@ -43,12 +43,25 @@
 #include <QApplication>
 
 #include <QtDBus/QDBusConnection>
+void helpMe()
+{
 
+    printf("Usage: elokab-notify [OPTION]\n");
+    puts("elokab-terminal v: 0.3 \n" );
+    puts("OPTION:\n");
+    puts(" -h  --help                  Print this help.\n");
+    puts(" -t  --tilwm                 use this option for a tilling window manager.\n");
+    puts(" -p, --pos      <int>        position on this screen TOP_LEFT= 0 , TOP_RIGHT 1 \n");
+    puts("                             BOT_LEFT= 2 , BOT_RIGHT= 3 ,TOP_CENTER= 4\n");
+    puts("                             LEFT_CENTER= 5 , RIGHT_CENTER= 6 ,BOT_CENTER= 7\n");
+
+}
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     app.setApplicationName("elokab-notify");
     app.setOrganizationName("elokab");
+
 
    QDBusConnection connection = QDBusConnection::sessionBus();
 
@@ -77,7 +90,37 @@ int main(int argc, char *argv[])
 
         return 1;
     }
-    ElokabNotification *elokabNotification = new ElokabNotification;
+
+    bool til_wm=true;
+    int pos=0;
+     QStringList args = app.arguments();
+
+     if(args.count()>1)
+     {
+         for (int i = 0; i < args.count(); ++i) {
+
+             QString arg = args.at(i);
+             if (arg == "-h" || arg == "--help" ) {helpMe();return 0; }
+
+             else if (arg == "-t" || arg == "tilwm" )  {til_wm=true; }
+             else if (arg == "-p" || arg == "--pos" )
+             {
+                 if(i+1>args.count()-1){helpMe();return 0;}
+
+                  pos=args.at(i+1).toInt();
+                  QSettings  setting;
+                  setting.beginGroup("Notification");
+                  setting.setValue("position",pos);
+
+                  setting.endGroup();
+
+             }
+
+         }
+
+     }
+
+    ElokabNotification *elokabNotification = new ElokabNotification(til_wm);
 
     new ElokabInterfaceAdaptor(elokabNotification);
     connection.registerObject("/org/freedesktop/Notifications", elokabNotification);
