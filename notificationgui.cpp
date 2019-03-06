@@ -23,7 +23,7 @@ NotificationGui::NotificationGui(bool til_wm, QWidget *parent) :
     m_til_wm=til_wm;
      ui->setupUi(this);
      ui->widgetNavig->setVisible(false);
-     setWindowFlags(Qt::Dialog | Qt::WindowStaysOnTopHint | Qt::CustomizeWindowHint | Qt::X11BypassWindowManagerHint);
+     setWindowFlags(Qt::Dialog | Qt::WindowStaysOnTopHint | Qt::CustomizeWindowHint /*| Qt::X11BypassWindowManagerHint*/);
      mTimer=new QTimer;
 
      m_fileWatcher=new QFileSystemWatcher;
