@@ -64,6 +64,8 @@ void ElokabNotification::Notify(const QString &app_name, uint replaces_id, const
     qDebug()<<"this is a message :"<<app_name<<summary<<body<<app_icon;
     mGui->setNotify(app_name,summary,body,app_icon,  expire_timeout);
     mGui->show();
+    mGui->activateWindow();
+    mGui->raise();
     QTimer::singleShot(10,this,SLOT(resizeGui()));
 
 }
